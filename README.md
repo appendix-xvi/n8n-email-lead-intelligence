@@ -1,28 +1,38 @@
+# n8n Email Lead Collector
 
-# 📧 Email Lead Collector (n8n)
+An n8n workflow for collecting publicly visible email addresses from a list of website URLs and exporting the results to a CSV file.
 
-This automation flow allows you to scrape emails from any list of websites and export the result as a downloadable CSV file.
+The workflow uses official n8n nodes only. It does not require OAuth, external APIs, or community nodes.
 
-✅ Built using official n8n nodes only  
-✅ No OAuth / external API required  
-✅ No community nodes used  
+## Overview
 
----
+This repository provides a lightweight automation flow for:
 
-## 🧩 Features
+- Accepting a list of website URLs
+- Fetching HTML content from each website
+- Extracting email addresses from visible page content
+- Removing duplicate and invalid email values
+- Exporting the result to `emails.csv`
 
-- Input list of website URLs
-- Scrape email addresses from HTML content
-- Filter duplicate & invalid emails
-- Export result as CSV to `./emails.csv`
-- Works on n8n v1.94.1 and above
+## Requirements
 
----
+- n8n v1.94.1 or later
+- Local n8n instance or Docker-based n8n runtime
+- File write access from the n8n process
 
-## 🚀 Usage (Step-by-step)
+## Files
 
-1. Import the provided `email-lead-collector.json` into n8n
-2. Click the first node (Set) → enter websites in this format:
+| File | Purpose |
+|---|---|
+| `email-lead-collector.json` | Importable n8n workflow |
+| `demo.gif` | Optional screen recording or usage demo |
+| `README.md` | Project documentation |
+
+## Usage
+
+1. Import `email-lead-collector.json` into n8n.
+2. Open the first `Set` node.
+3. Enter website URLs in the expected list format:
 
    ```json
    [
@@ -32,41 +42,12 @@ This automation flow allows you to scrape emails from any list of websites and e
    ]
    ```
 
-3. Run the full workflow
-4. The result file `emails.csv` will be saved in your current working directory
+4. Run the workflow.
+5. Review the exported file at `./emails.csv`.
 
----
+## Docker Usage
 
-## 💡 Real-world Use Cases
-
-Here’s how others can use this tool in practice:
-
-- **Marketing**  
-  Generate cold email lists by scanning event websites, directories, or partner pages.
-
-- **Sales Prospecting**  
-  Find potential client emails from business listings or company sites.
-
-- **Hiring / Freelance**  
-  Extract contact emails from agency pages or freelance portfolios.
-
-- **Lead Collection**  
-  Gather leads from local service directories (plumbing, design, tutors, etc.).
-
-- **Education & Research**  
-  Collect contact points for research studies, academic outreach, or surveys.
-
-- **NGO / Outreach**  
-  Collect emails for campaign targeting from relevant NGO or local org sites.
-
----
-
-## ⚠️ Notes on File Saving
-
-- This flow saves to: `./emails.csv`  
-  *(relative to where n8n is running)*
-
-### 🐳 If using Docker:
+Run n8n with a mounted output directory:
 
 ```bash
 docker run -it --rm \
@@ -75,60 +56,51 @@ docker run -it --rm \
   -p 5678:5678 n8nio/n8n
 ```
 
-Then change `File Path` in Save File node to:
+When using Docker, set the Save File node path to:
 
-```
+```text
 /data/emails.csv
 ```
 
----
+## Validation
 
-## 🇹🇭 คำอธิบายภาษาไทย
+After running the workflow, validate the output by checking:
 
-Flow นี้ใช้สำหรับดึงอีเมลจากเว็บไซต์ต่าง ๆ และบันทึกผลลัพธ์เป็นไฟล์ `.csv` โดยไม่ต้องใช้ API หรือระบบภายนอก
+- The workflow finishes without node errors
+- `emails.csv` is created in the expected directory
+- Duplicate email addresses are removed
+- The result contains only email-like values
 
-- ป้อน URL ของเว็บไซต์ที่ต้องการ
-- ดึง email ที่พบจาก HTML โดยตรง
-- บันทึกผลลัพธ์ลงใน `./emails.csv`
+## Troubleshooting
 
-✅ เหมาะสำหรับนักการตลาด / นักพัฒนา / เจ้าของธุรกิจที่ต้องการ Lead  
-✅ ไม่มีขั้นตอน OAuth ให้ยุ่งยาก
+### ENOENT: no such file or directory
 
----
+This usually means the output directory does not exist or the n8n process cannot write to it.
 
-## 📁 Files
+Recommended checks:
 
-- `email-lead-collector.json` — The workflow file
-- `demo.gif` — Screencast example (optional)
-- `README.md` — This file
+- For local execution, use `./emails.csv`.
+- For Docker execution, mount a directory and use `/data/emails.csv`.
+- Confirm the directory exists before running the workflow.
 
----
+### No emails found
 
-## 🛠 Troubleshooting
+Possible causes:
 
-### ❌ Error: `ENOENT: no such file or directory`
-- This happens when the folder path doesn't exist.
-- Solution: Make sure the directory in the `Save File` node exists.
-  - For local: use `./emails.csv`
-  - For Docker: use `/data/emails.csv`
+- The target website does not expose email addresses in the page HTML.
+- The website renders contact information dynamically with JavaScript.
+- The request is blocked or redirected.
 
-### ❌ No Emails Found
-- Try websites with visible email addresses in the page.
-- Enable "Always Output Data" in `Settings`.
+Recommended checks:
 
----
+- Test with a website that clearly displays an email address in the HTML.
+- Enable `Always Output Data` for debugging specific nodes.
+- Review the HTML response before the extraction step.
 
-## 🎞 Demo GIF
+## Responsible Use
 
-> Add your own screen recording using [ScreenToGif](https://www.screentogif.com/)
+Use this workflow only for legitimate contact discovery, internal research, or approved outreach workflows. Review applicable privacy, anti-spam, and website terms before using extracted contact data.
 
+## License
 
-![Demo](demo.gif)
-
-
----
-
-## 🪪 License
-
-This project is released under the [MIT License](https://opensource.org/licenses/MIT).  
-You may use, modify, and distribute this project commercially or personally.
+This project is released under the [MIT License](https://opensource.org/licenses/MIT).
